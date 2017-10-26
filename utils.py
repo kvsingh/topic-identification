@@ -5,23 +5,33 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
+def print_bow_lyrics(bow, id2token, count):
+    bow = sorted(bow, key=lambda a: a[1], reverse=True)
+    bow = bow[:count]
+    for (id, count) in bow:
+        print id2token[id], count
+
 def text_preprocessing(text):
     tokens = word_tokenize(text)
     tokens = [t.lower() for t in tokens]
-    tokens = filter(lambda a: a not in stopwords.words('english'), tokens)
+
+    #remove punctuation
+    translate_table = dict((ord(char), None) for char in string.punctuation)
+    tokens = [t.translate(translate_table) for t in tokens]
+    tokens = filter(bool, tokens)
+    #tokens = [t if t is not '' for t in tokens]
 
     wordnet_lemmatizer = WordNetLemmatizer()
     tokens = [wordnet_lemmatizer.lemmatize(t) for t in tokens]
+    tokens = filter(lambda a: len(a) > 2, tokens)
+    tokens = filter(lambda a: a not in stopwords.words('english'), tokens)
     return tokens
 
 def clean_raw_data(raw_text):
     #remove structure identifiers
     cleaned_text = re.sub(r'[\(\[].*?[\)\]]', '', raw_text)
     cleaned_text = os.linesep.join([s for s in cleaned_text.splitlines() if s])
-
-    #remove punctuation
-    translate_table = dict((ord(char), None) for char in string.punctuation)
-    cleaned_text = cleaned_text.translate(translate_table)
+    #print cleaned_text
 
     return cleaned_text
 
@@ -81,5 +91,6 @@ def search(search_term,client_access_token):
             #print row
             #outwriter.writerow(row) #write as CSV
             results.append(row)
-        return results
+        if page == 2:
+            return results
         page+=1
