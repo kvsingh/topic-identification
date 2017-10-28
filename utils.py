@@ -11,6 +11,12 @@ def print_bow_lyrics(bow, id2token, count):
     for (id, count) in bow:
         print id2token[id], count
 
+def print_bow(bow, dictionary):
+    mydict = dictionary.token2id
+    inverted_dict = dict([[v, k] for k, v in mydict.items()])
+    for (tokenid, count) in bow:
+        print inverted_dict[tokenid], count
+
 def text_preprocessing(text):
     tokens = word_tokenize(text)
     tokens = [t.lower() for t in tokens]
