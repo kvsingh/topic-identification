@@ -31,6 +31,12 @@ def text_preprocessing(text):
     tokens = [wordnet_lemmatizer.lemmatize(t) for t in tokens]
     tokens = filter(lambda a: len(a) > 2, tokens)
     tokens = filter(lambda a: a not in stopwords.words('english'), tokens)
+
+    #filter commonly used words
+    #common_words = ["know", "like", "time", "one", "never", "see", "way", "get", "got", "say"]
+    common_words = ['know', 'like', 'time', 'one', 'never', 'see', 'way', 'get', 'got', 'say', 'make', 'feel', 'love', 'come', 'day', 'let', 'want', 'back', 'eye', 'life', 'take', 'face', 'away', 'mind', 'could', 'yeah', 'right', 'need', 'still', 'keep', 'gon', 'heart', 'well', 'tell', 'think', 'cause', 'thing', 'give', 'hand', 'light', 'dream', 'inside', 'made', 'something', 'find', 'would', 'little', 'world', 'try', 'head']
+    tokens = filter(lambda a: a not in common_words, tokens)
+
     return tokens
 
 def clean_raw_data(raw_text):
